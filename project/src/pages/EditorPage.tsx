@@ -112,7 +112,7 @@ const EditorPage: React.FC = () => {
               <button
                 onClick={handleToggleBeforeAfter}
                 className={`p-2 rounded-md flex items-center transition-colors ${
-                  showBeforeAfter ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-600'
+                  showBeforeAfter ? 'bg-red-100 text-red-700' : 'hover:bg-gray-100 text-gray-600'
                 }`}
               >
                 <RotateCcw className="w-5 h-5 mr-1" />
@@ -131,7 +131,7 @@ const EditorPage: React.FC = () => {
               
               <button
                 onClick={handleExport}
-                className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center transition-colors"
+                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-md flex items-center transition-colors"
               >
                 <Download className="w-5 h-5 mr-1" />
                 <span className="hidden sm:inline">Exporter</span>

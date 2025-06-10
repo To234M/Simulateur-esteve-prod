@@ -11,13 +11,13 @@ const Footer: React.FC = () => {
             </p>
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-500 hover:text-blue-500 transition-colors">
+            <a href="#" className="text-gray-500 hover:text-red-500 transition-colors">
               À propos
             </a>
-            <a href="#" className="text-gray-500 hover:text-blue-500 transition-colors">
+            <a href="#" className="text-gray-500 hover:text-red-500 transition-colors">
               Confidentialité
             </a>
-            <a href="#" className="text-gray-500 hover:text-blue-500 transition-colors">
+            <a href="#" className="text-gray-500 hover:text-red-500 transition-colors">
               Contact
             </a>
           </div>

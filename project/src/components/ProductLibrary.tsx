@@ -113,7 +113,7 @@ const ProductCategory: React.FC<CategoryProps> = ({ title, items, canvasRef }) =
           {items.map(item => (
             <div
               key={item.id}
-              className="border rounded-md p-1 cursor-pointer hover:border-blue-400 transition-colors hover:shadow-sm"
+              className="border rounded-md p-1 cursor-pointer hover:border-red-400 transition-colors hover:shadow-sm"
               onClick={() => addItemToCanvas(item)}
             >
               <div className="aspect-w-1 aspect-h-1 mb-1 bg-gray-100 rounded overflow-hidden">

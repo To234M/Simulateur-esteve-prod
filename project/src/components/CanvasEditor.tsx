@@ -154,7 +154,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
       >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75 z-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
           </div>
         )}
         <canvas ref={canvasElRef} />
