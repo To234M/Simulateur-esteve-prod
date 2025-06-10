@@ -72,7 +72,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUploaded }) => {
   return (
     <div
       className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-300 hover:bg-blue-50'
+        isDragging ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-red-300 hover:bg-red-50'
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -89,17 +89,17 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUploaded }) => {
       
       <div className="flex flex-col items-center">
         {isLoading ? (
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500 mb-4"></div>
         ) : (
           <>
-            <Upload className="w-12 h-12 text-blue-500 mb-4" />
+            <Upload className="w-12 h-12 text-red-500 mb-4" />
             <div className="mb-2 font-medium text-gray-800">
               {isDragging ? 'Déposez votre image ici' : 'Glissez-déposez votre image ici'}
             </div>
             <div className="text-sm text-gray-500 mb-4">ou</div>
             <button
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center"
             >
               <ImageIcon className="w-4 h-4 mr-2" />
               Parcourir

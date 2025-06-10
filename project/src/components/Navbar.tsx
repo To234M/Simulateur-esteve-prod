@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
             <Home className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-semibold text-gray-800">VisionMaison</span>
@@ -45,8 +45,8 @@ const NavLink: React.FC<NavLinkProps> = ({ to, active, children }) => {
     <Link
       to={to}
       className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
-        active 
-          ? 'bg-blue-50 text-blue-600' 
+        active
+          ? 'bg-red-50 text-red-600'
           : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
       }`}
     >
