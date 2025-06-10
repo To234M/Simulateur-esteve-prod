@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { fabric } from 'fabric';
-import { Move, RotateCw, Trash2 } from 'lucide-react';
+import { Move, RotateCw, Trash2, Undo2, Redo2 } from 'lucide-react';
 
 interface CanvasEditorProps {
   image: {
@@ -17,6 +17,18 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const undoStack = useRef<string[]>([]);
+  const redoStack = useRef<string[]>([]);
+  const isRestoring = useRef(false);
+
+  const saveState = useCallback(() => {
+    if (!canvasRef.current || isRestoring.current) return;
+    undoStack.current.push(JSON.stringify(canvasRef.current));
+    if (undoStack.current.length > 50) {
+      undoStack.current.shift();
+    }
+    redoStack.current = [];
+  }, []);
 
   // Initialize canvas
   useEffect(() => {
@@ -38,7 +50,10 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
       canvas.on('selection:cleared', () => {
         setSelectedObject(null);
       });
-      
+
+      const stateEvents = ['object:added', 'object:modified', 'object:removed'];
+      stateEvents.forEach(evt => canvas.on(evt, saveState));
+
       canvasRef.current = canvas;
       setCanvasRef(canvas);
       
@@ -46,9 +61,10 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
         canvas.dispose();
         canvasRef.current = null;
         setCanvasRef(null);
+        stateEvents.forEach(evt => canvas.off(evt, saveState));
       };
     }
-  }, [setCanvasRef]);
+  }, [setCanvasRef, saveState]);
 
   // Load background image
   useEffect(() => {
@@ -91,11 +107,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
           lockScalingY: true
         });
         
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        canvas.setBackgroundImage(img, () => {
+          canvas.renderAll();
+          saveState();
+        });
         setIsLoading(false);
       }, { crossOrigin: 'anonymous' });
     }
-  }, [image]);
+  }, [image, saveState]);
 
   // Handle window resize
   useEffect(() => {
@@ -129,6 +148,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
     if (selectedObject && canvasRef.current) {
       selectedObject.rotate((selectedObject.angle || 0) + angle);
       canvasRef.current.renderAll();
+      saveState();
     }
   };
   
@@ -136,13 +156,41 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
     if (selectedObject && canvasRef.current) {
       canvasRef.current.remove(selectedObject);
       setSelectedObject(null);
+      saveState();
     }
   };
 
   const handleBringForward = () => {
     if (selectedObject && canvasRef.current) {
       canvasRef.current.bringForward(selectedObject);
+      saveState();
     }
+  };
+
+  const handleUndo = () => {
+    if (!canvasRef.current || undoStack.current.length <= 1) return;
+    const currentState = undoStack.current.pop();
+    if (!currentState) return;
+    redoStack.current.push(currentState);
+    const prevState = undoStack.current[undoStack.current.length - 1];
+    if (prevState) {
+      isRestoring.current = true;
+      canvasRef.current.loadFromJSON(prevState, () => {
+        canvasRef.current!.renderAll();
+        isRestoring.current = false;
+      });
+    }
+  };
+
+  const handleRedo = () => {
+    if (!canvasRef.current || redoStack.current.length === 0) return;
+    const nextState = redoStack.current.pop()!;
+    undoStack.current.push(nextState);
+    isRestoring.current = true;
+    canvasRef.current.loadFromJSON(nextState, () => {
+      canvasRef.current!.renderAll();
+      isRestoring.current = false;
+    });
   };
 
   return (
@@ -158,6 +206,23 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ image, setCanvasRef }) => {
           </div>
         )}
         <canvas ref={canvasElRef} />
+      </div>
+
+      <div className="mt-4 p-3 bg-gray-100 rounded-md flex flex-wrap items-center gap-2">
+        <button
+          onClick={handleUndo}
+          className="p-2 bg-white rounded-md hover:bg-gray-200 transition-colors"
+          title="Annuler"
+        >
+          <Undo2 className="w-5 h-5" />
+        </button>
+        <button
+          onClick={handleRedo}
+          className="p-2 bg-white rounded-md hover:bg-gray-200 transition-colors"
+          title="Rétablir"
+        >
+          <Redo2 className="w-5 h-5" />
+        </button>
       </div>
       
       {selectedObject && (
